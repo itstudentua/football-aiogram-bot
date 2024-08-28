@@ -89,7 +89,7 @@ async def my_teams(message: Message, state: FSMContext):
         text = f'My teams ⚽️:'
         keyboard = await kb.my_teams(user_id=message.from_user.id, all_in=False)
     else:
-        text = "You haven't any team yet!"
+        text = "You don't have any team yet!"
         keyboard = None
     await message.answer("You could add/remove teams.", reply_markup=kb.my_teams_menu)
     # await message.answer(text, reply_markup=await kb.my_teams(user_id=message.from_user.id))
@@ -249,7 +249,6 @@ async def remove_team(message: Message, state: FSMContext):
     await state.clear()
 
     user_id = message.from_user.id
-    rq.get_user_teams(user_id)
 
     result = "You don't have any teams to remove!"
     keyboard = None
