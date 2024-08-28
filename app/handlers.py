@@ -302,7 +302,8 @@ async def set_notifications_time(message: Message, state: FSMContext):
 
 
 @router.message()
-async def default_message(message: Message):
+async def default_message(message: Message, state: FSMContext):
+    await state.clear()
     user_id = message.from_user.id
     rq.get_user_teams(user_id)
 
