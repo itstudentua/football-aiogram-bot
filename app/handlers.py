@@ -251,9 +251,14 @@ async def remove_team(message: Message, state: FSMContext):
     user_id = message.from_user.id
     rq.get_user_teams(user_id)
 
-    await state.update_data(removing_team="yes")
-    await message.answer(f'Choose team to remove:',
-                         reply_markup=await kb.my_teams(user_id=message.from_user.id, all_in=False))
+    result = "You don't have any teams to remove!"
+    keyboard = None
+
+    if len(rq.get_user_teams(user_id)["teams"]) != 0:
+        result = 'Choose team to remove:'
+        keyboard = await kb.my_teams(user_id=message.from_user.id, all_in=False)
+        await state.update_data(removing_team="yes")
+    await message.answer(result, reply_markup=keyboard)
 
 
 @router.message(F.text == 'Notifications')
