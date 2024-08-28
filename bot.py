@@ -1,4 +1,6 @@
 #  https://github.com/rlxrd/aiogram_fast_pt1/blob/main/app/handlers.pyfrom
+import os
+
 from aiogram import Bot, Dispatcher
 import asyncio
 
@@ -6,7 +8,8 @@ from aiogram.types import BotCommand
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from app.handlers import router
-from config import BOT_TOKEN
+
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 bot = Bot(token=BOT_TOKEN)
 scheduler_ = AsyncIOScheduler()

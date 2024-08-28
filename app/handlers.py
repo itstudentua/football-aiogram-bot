@@ -55,11 +55,12 @@ async def notifications_message():
     for user in list(rq.users_db.keys()):
         now = datetime.now()
         current_time = now.strftime("%H:%M")
-        hour = rq.get_user_teams(user)["notifications"]["time"].split(':')[0]
+        hour = rq.railway_time(int(rq.get_user_teams(user)["notifications"]["time"].split(':')[0]))
         minute = rq.get_user_teams(user)["notifications"]["time"].split(':')[1]
         print(f"Notifications – not_hour: {hour}, not_minute: {minute}, cur_h: {current_time.split(':')[0]}, cur_m: "
               f"{current_time.split(':')[1]}")
-        if (rq.get_user_teams(user)["notifications"]["status"] and int(hour) == int(current_time.split(':')[0]) and
+        if (rq.get_user_teams(user)["notifications"]["status"] and int(hour) == int(
+                current_time.split(':')[0]) and
                 int(minute) == int(current_time.split(':')[1])):
             result = rq.get_matches_of_all_teams(user_id=user, days_count=0,
                                                  date_from=rq.today_date)
@@ -281,7 +282,7 @@ async def set_notifications_time(message: Message, state: FSMContext):
         except Exception as ex:
             print(ex)
         try:
-            scheduler_.add_job(notifications_message, CronTrigger(hour=int(hour), minute=int(minute)),
+            scheduler_.add_job(notifications_message, CronTrigger(hour=rq.railway_time(int(hour)), minute=int(minute)),
                                id=f"{job_id}")
 
             user_info["notifications"]["time"] = f"{hour}:{minute}"
@@ -322,7 +323,7 @@ async def set_notifications(callback: CallbackQuery, state: FSMContext):
         except Exception as ex:
             print(ex)
         try:
-            scheduler_.add_job(notifications_message, CronTrigger(hour=hour, minute=minute), id=f"job_{user_id}")
+            scheduler_.add_job(notifications_message, CronTrigger(hour=rq.railway_time(hour), minute=minute), id=f"job_{user_id}")
         except Exception as ex:
             print(ex)
 

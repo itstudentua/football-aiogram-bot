@@ -1,3 +1,5 @@
+import os
+
 import pytz
 import requests
 from datetime import datetime, timedelta
@@ -5,7 +7,6 @@ from datetime import datetime, timedelta
 from apscheduler.triggers.cron import CronTrigger
 
 import app.handlers as h
-from config import api_key
 
 # https://www.devglan.com/online-tools/aes-encryption-decryption
 
@@ -16,12 +17,22 @@ from config import api_key
 # illyakup
 # api_key = '9E130836BDE61423C0FFA21E4A7FD6A55729FAF8E2E14AEEFF1EBBD3F4C56A4AC9226221A6DCE5791C226A6BC69D62D6'
 
+api_key = os.getenv("API_KEY")
 
 BASE_URL = 'https://v3.football.api-sports.io/'
 timezone = 'Europe/Kiev'
 
 users_db = dict()
-team_dict = {"Dynamo Kyiv": 572}
+team_dict = {}
+
+RAILWAY_TIME = 3
+
+
+def railway_time(hour):
+    hour -= RAILWAY_TIME
+    if hour < 0:
+        hour += 24
+    return hour
 
 
 # function which helps avoid error with dictionary users_db, job scheduler if bot server restart
@@ -39,14 +50,15 @@ def get_user_teams(user_id, hour=9, minute=5):
         if not h.scheduler_.running:
             h.scheduler_.start()
         job_id = f"job_{user_id}"
-        h.scheduler_.add_job(h.notifications_message, CronTrigger(hour=hour, minute=minute), id=job_id)
+        h.scheduler_.add_job(h.notifications_message, CronTrigger(hour=railway_time(hour), minute=minute), id=job_id)
     return users_db[user_id]
 
 
 current_time = datetime.now()
+railway_date = current_time + timedelta(hours=RAILWAY_TIME)
 
-today_date = current_time.strftime('%Y-%m-%d')
-season_year = current_time.strftime('%Y')
+today_date = railway_date.strftime('%Y-%m-%d')
+season_year = railway_date.strftime('%Y')
 
 
 def get_days_count_in_month(year, month):
