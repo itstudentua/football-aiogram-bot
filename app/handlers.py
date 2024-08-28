@@ -88,7 +88,7 @@ async def my_teams(message: Message, state: FSMContext):
         text = f'My teams ⚽️:'
         keyboard = await kb.my_teams(user_id=message.from_user.id, all_in=False)
     else:
-        text = "You haven't any team yet!"
+        text = "You don't have any team yet!"
         keyboard = None
     await message.answer("You could add/remove teams.", reply_markup=kb.my_teams_menu)
     # await message.answer(text, reply_markup=await kb.my_teams(user_id=message.from_user.id))
@@ -125,10 +125,13 @@ async def schedule(message: Message, state: FSMContext):
     result = rq.get_matches_of_all_teams(user_id=message.from_user.id, days_count=0, date_from=rq.today_date)
     if result == '':
         result = f"There aren't any matches today!"
-        keyboard = None
     else:
         result = f"Today's schedule for your favourite teams:\n\n{result}"
-        keyboard = kb.schedule_menu
+
+    keyboard = kb.schedule_menu
+    if len(rq.get_user_teams(user_id)["teams"]) == 0:
+        result = "You don't have any teams to discover schedule!"
+        keyboard = None
     await message.answer(result, reply_markup=keyboard)
 
 
