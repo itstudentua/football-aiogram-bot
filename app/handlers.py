@@ -63,7 +63,7 @@ async def notifications_message():
                 current_time.split(':')[0]) and
                 int(minute) == int(current_time.split(':')[1])):
             result = rq.get_matches_of_all_teams(user_id=user, days_count=0,
-                                                 date_from=rq.today_date)
+                                                 date_from=rq.today_date())
             if result == '':
                 result = f"There aren't any matches today!"
             else:
@@ -110,11 +110,11 @@ async def main_menu(message: Message, state: FSMContext):
 async def calendar(message: Message, state: FSMContext):
     await state.clear()
 
-    await state.update_data(year=rq.season_year)
+    await state.update_data(year=rq.season_year())
     user_id = message.from_user.id
     rq.get_user_teams(user_id)
     await message.answer("Select the month to show the matches:",
-                         reply_markup=await kb.calendar_kb(int(rq.season_year)))
+                         reply_markup=await kb.calendar_kb(int(rq.season_year())))
 
 
 @router.message(F.text == 'Schedule')
@@ -123,7 +123,7 @@ async def schedule(message: Message, state: FSMContext):
 
     user_id = message.from_user.id
     rq.get_user_teams(user_id)
-    result = rq.get_matches_of_all_teams(user_id=message.from_user.id, days_count=0, date_from=rq.today_date)
+    result = rq.get_matches_of_all_teams(user_id=message.from_user.id, days_count=0, date_from=rq.today_date())
     if result == '':
         result = f"There aren't any matches today!"
     else:
@@ -393,14 +393,14 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
         # if choice of the period has been made
         else:
             days_count = 7  # for week prev and next
-            season = rq.season_year
+            season = rq.season_year()
             if period_class.get("period") == "Next week":
-                date_from = rq.today_date
+                date_from = rq.today_date()
             elif period_class.get("period") == "Previous week":
-                date_from = rq.specify_date(rq.today_date, -7)
+                date_from = rq.specify_date(rq.today_date(), -7)
             # for today
             elif period_class.get("period") == "Today":
-                date_from = rq.today_date
+                date_from = rq.today_date()
                 days_count = 0
             else:
                 season = period_class.get("year")
@@ -459,7 +459,7 @@ async def calendar_month(callback: CallbackQuery, state: FSMContext):
 
     year = await state.get_data()
     if year.get("year") is None:
-        await state.update_data(year=rq.season_year)
+        await state.update_data(year=rq.season_year())
         year = await state.get_data()
     await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     year_answer = year.get("year")

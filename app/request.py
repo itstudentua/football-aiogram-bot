@@ -63,8 +63,12 @@ def get_date(date_format):
     return railway.strftime(date_format)
 
 
-today_date = get_date('%Y-%m-%d')
-season_year = get_date('%Y')
+def today_date():
+    return get_date('%Y-%m-%d')
+
+
+def season_year():
+    return get_date('%Y')
 
 
 def get_days_count_in_month(year, month):
@@ -73,14 +77,14 @@ def get_days_count_in_month(year, month):
 
 
 # function to create custom date_from
-def specify_date(date_from=today_date, days_count=0):
+def specify_date(date_from=today_date(), days_count=0):
     return (datetime.strptime(date_from, "%Y-%m-%d") + timedelta(days=days_count)).strftime('%Y-%m-%d')
 
 
 def get_matches_of_one_team(user_id,
-                            season=season_year,
+                            season=season_year(),
                             team_id=572,
-                            date_from=today_date,
+                            date_from=today_date(),
                             days_count=0):
     end_date = specify_date(date_from, days_count)
     get_user_teams(user_id)
@@ -144,7 +148,7 @@ def get_matches_of_one_team(user_id,
 def get_matches_of_all_teams(days_count,
                              user_id,
                              date_from=datetime.now().strftime('%Y-%m-%d'),
-                             season=season_year):
+                             season=season_year()):
 
     get_user_teams(user_id)
 
