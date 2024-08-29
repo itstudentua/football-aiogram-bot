@@ -43,10 +43,13 @@ def get_user_teams(user_id, hour=9, minute=5):
     return users_db[user_id]
 
 
-current_time = datetime.now()
+def get_date(date_format):
+    current_time = datetime.now()
+    return current_time.strftime(date_format)
 
-today_date = current_time.strftime('%Y-%m-%d')
-season_year = current_time.strftime('%Y')
+
+today_date = get_date('%Y-%m-%d')
+season_year = get_date('%Y')
 
 
 def get_days_count_in_month(year, month):
