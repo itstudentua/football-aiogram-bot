@@ -54,21 +54,17 @@ def get_user_teams(user_id, hour=9, minute=5):
     return users_db[user_id]
 
 
-<<<<<<< HEAD
-current_time = datetime.now()
-railway_date = current_time + timedelta(hours=RAILWAY_TIME)
+def get_current_time():
+    return datetime.now()
 
-today_date = railway_date.strftime('%Y-%m-%d')
-season_year = railway_date.strftime('%Y')
-=======
+
 def get_date(date_format):
-    current_time = datetime.now()
-    return current_time.strftime(date_format)
+    railway = get_current_time() + timedelta(hours=RAILWAY_TIME)
+    return railway.strftime(date_format)
 
 
 today_date = get_date('%Y-%m-%d')
 season_year = get_date('%Y')
->>>>>>> b0142c1 (fix date)
 
 
 def get_days_count_in_month(year, month):
