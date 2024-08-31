@@ -41,7 +41,14 @@ async def my_teams(user_id, all_in=True):
         return None
 
 
-async def notifications_kb(btn_on="ON✅", btn_off="OFF"):
+async def notifications_kb(status):
+    if status:
+        btn_on = "ON✅"
+        btn_off = "OFF"
+    else:
+        btn_on = "ON"
+        btn_off = "OFF❌"
+
     keyboard = InlineKeyboardBuilder()
     keyboard.add(
         InlineKeyboardButton(text=btn_on, callback_data=f"notifications_ON"),
