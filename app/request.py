@@ -32,7 +32,7 @@ def get_user_teams(user_id, hour=9, minute=5):
         users_db[user_id]["teams"] = team_dict.copy()
 
         users_db[user_id]["notifications"] = {}
-        users_db[user_id]["notifications"]["status"] = "ON"
+        users_db[user_id]["notifications"]["status"] = True
         users_db[user_id]["notifications"]["time"] = "00:45"
 
         # starting scheduler

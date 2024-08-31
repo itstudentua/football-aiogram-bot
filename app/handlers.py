@@ -264,9 +264,9 @@ async def notifications_func(message: Message, state: FSMContext):
     await state.clear()
 
     user_id = message.from_user.id
-    rq.get_user_teams(user_id)
-
-    await message.answer(f'Notification settings:', reply_markup=await kb.notifications_kb())
+    user_info = rq.get_user_teams(user_id)
+    status = user_info["notifications"]["status"]
+    await message.answer(f'Notification settings:', reply_markup=await kb.notifications_kb(status))
 
 
 @router.message(Notifications.time)
@@ -312,7 +312,9 @@ async def default_message(message: Message, state: FSMContext):
 async def set_notifications(callback: CallbackQuery, state: FSMContext):
     await state.clear()
 
+    status = True
     btn_res = ["ON✅", "OFF"]
+
     notifications = callback.data.split('_')[1]
 
     current_markup = callback.message.reply_markup.dict()
@@ -321,6 +323,7 @@ async def set_notifications(callback: CallbackQuery, state: FSMContext):
     user_info = rq.get_user_teams(user_id)
 
     if notifications == "ON":
+        status = True
         btn_res = ["ON✅", "OFF"]
         user_info["notifications"]["status"] = True
         hour = int(user_info["notifications"]["time"].split(':')[0])
@@ -335,6 +338,7 @@ async def set_notifications(callback: CallbackQuery, state: FSMContext):
             print(ex)
 
     elif notifications == "OFF":
+        status = False
         btn_res = ["ON", "OFF❌"]
         user_info["notifications"]["status"] = False
         try:
@@ -358,7 +362,7 @@ async def set_notifications(callback: CallbackQuery, state: FSMContext):
             await bot.edit_message_reply_markup(
                 chat_id=callback.message.chat.id,
                 message_id=callback.message.message_id,
-                reply_markup=await kb.notifications_kb(btn_on=btn_res[0], btn_off=btn_res[1]))
+                reply_markup=await kb.notifications_kb(status=status))
 
 
 @router.callback_query(F.data.startswith('team_'))
