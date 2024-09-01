@@ -209,10 +209,10 @@ async def approve_team(message: Message, state: FSMContext):
     team_info = add_team_answer.get("adding_team")
 
     name = team_info["name"]
-    id = team_info["id"]
+    team_id = team_info["id"]
 
     if message.text.lower() == "yes":
-        user_info["teams"][name] = id
+        user_info["teams"][name] = team_id
         answer_message = f"Team {name} successfully added!"
         mrkup = None
         await answer_func(state, message, answer_message, mrkup)
