@@ -381,7 +381,7 @@ async def choose_adding_team(callback: CallbackQuery, state: FSMContext):
 
         await state.set_state(Team.yes_no)
 
-        answer = f"This one?\n⚽️{name}\n🏟️{stadium}\n🌏{country}"
+        answer = f"This one?\n⚽️{name}\n🏟️{stadium}\n🌏{country}\n"
         await callback.message.answer(answer)
 
         await bot.send_photo(chat_id=callback.from_user.id, photo=logo, caption="Here is the logo!",
