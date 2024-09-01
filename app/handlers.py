@@ -192,20 +192,10 @@ async def get_team(message: Message, state: FSMContext):
 
     user_id = message.from_user.id
     user_info = rq.get_user_teams(user_id)
-
-    await state.update_data(adding_team=message.text)
-    team_info = rq.get_team_info(message.text)
-    if len(team_info) == 1:
-        await message.answer(team_info[0])
-    else:
-        if team_info[3] in user_info["teams"]:
-            await message.answer("You have such team!")
-        else:
-            await state.set_state(Team.yes_no)
-            await message.answer(team_info[0])
-
-            await bot.send_photo(chat_id=message.chat.id, photo=team_info[1], caption="Here is the logo!",
-                                 reply_markup=kb.yes_no_kb)
+    teams_list = rq.get_team_info(message.text)
+    await state.update_data(adding_team=teams_list)
+    keyboard = await kb.teams_to_add(f'{item["name"]}, {item["country"]}' for item in teams_list)
+    await message.answer("Choose team to add:", reply_markup=keyboard)
 
 
 @router.message(Team.yes_no)
@@ -215,11 +205,12 @@ async def approve_team(message: Message, state: FSMContext):
 
     await state.update_data(yes_no=message.text)
     add_team_answer = await state.get_data()
-    team_info = rq.get_team_info(add_team_answer.get("adding_team"))
+    team_info = add_team_answer.get("adding_team")
 
+    print(team_info)
     if message.text.lower() == "yes":
-        user_info["teams"][team_info[3]] = team_info[2]
-        answer_message = f"Team {team_info[3]} successfully added!"
+        user_info["teams"][team_info["name"]] = team_info["id"]
+        answer_message = f"Team {team_info["name"]} successfully added!"
         mrkup = None
         await answer_func(state, message, answer_message, mrkup)
     elif message.text.lower() == "no":
@@ -363,6 +354,37 @@ async def set_notifications(callback: CallbackQuery, state: FSMContext):
                 chat_id=callback.message.chat.id,
                 message_id=callback.message.message_id,
                 reply_markup=await kb.notifications_kb(status=status))
+
+
+@router.callback_query(F.data.startswith('add_team_'))
+async def choose_adding_team(callback: CallbackQuery, state: FSMContext):
+    user_id = callback.from_user.id
+    user_info = rq.get_user_teams(user_id)
+    team_name = str(callback.data.split('_')[-1])
+    team_number = int(callback.data.split('_')[-2])
+
+    add_team_answer = await state.get_data()
+    team_dict = add_team_answer.get("adding_team")
+
+    await state.update_data(adding_team=team_dict[team_number])
+
+    name = team_dict[team_number]["name"]
+    stadium = team_dict[team_number]["stadium"]
+    id = team_dict[team_number]["id"]
+    logo = team_dict[team_number]["logo"]
+
+    print(team_name)
+    if team_name in user_info["teams"]:
+        await callback.message.answer("You have such team!")
+    else:
+
+        await state.set_state(Team.yes_no)
+
+        answer = f"This one?\n⚽️{name}\n🏟️{stadium}\n"
+        await callback.message.answer(answer)
+
+        await bot.send_photo(chat_id=callback.from_user.id, photo=logo, caption="Here is the logo!",
+                             reply_markup=kb.yes_no_kb)
 
 
 @router.callback_query(F.data.startswith('team_'))

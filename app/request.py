@@ -153,10 +153,13 @@ def get_team_info(team_name):
 
     if not fixtures["response"]:
         return ["Couldn't find the team."]
-
-    team = fixtures["response"][0]["team"]
-    stadium = fixtures["response"][0]["venue"]
-
-    return [(f"This one?\n"
-             f"⚽️{team['name']}\n"
-             f"🏟️{stadium['name']}\n"), team['logo'], team['id'], team['name']]
+    i = 0
+    result = []
+    for team in fixtures["response"]:
+        if team["team"]["name"].lower() == team_name.lower() or team_name.lower() in team["team"]["name"].lower():
+            result.append({"name": team["team"]["name"], "country": team["team"]["country"], "id": team["team"]["id"],
+                           "logo": team["team"]["logo"], "stadium": team["venue"]["name"]})
+            i += 1
+            if i == 3:
+                break
+    return result

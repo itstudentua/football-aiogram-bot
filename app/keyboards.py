@@ -41,6 +41,16 @@ async def my_teams(user_id, all_in=True):
         return None
 
 
+async def teams_to_add(teams):
+    keyboard = InlineKeyboardBuilder()
+    i = 0
+    for team in teams:
+        keyboard.add(InlineKeyboardButton(text=team, callback_data=f"add_team_{i}_{team.split(',')[0]}"))
+        i += 1
+    keyboard.adjust(2)
+    return keyboard.as_markup()
+
+
 async def notifications_kb(status):
     if status:
         btn_on = "ON✅"
