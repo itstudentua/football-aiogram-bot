@@ -207,10 +207,12 @@ async def approve_team(message: Message, state: FSMContext):
     add_team_answer = await state.get_data()
     team_info = add_team_answer.get("adding_team")
 
-    print(team_info)
+    name = team_info["name"]
+    team_id = team_info["id"]
+
     if message.text.lower() == "yes":
-        user_info["teams"][team_info["name"]] = team_info["id"]
-        answer_message = f"Team {team_info["name"]} successfully added!"
+        user_info["teams"][name] = team_id
+        answer_message = f"Team {name} successfully added!"
         mrkup = None
         await answer_func(state, message, answer_message, mrkup)
     elif message.text.lower() == "no":
@@ -370,10 +372,8 @@ async def choose_adding_team(callback: CallbackQuery, state: FSMContext):
 
     name = team_dict[team_number]["name"]
     stadium = team_dict[team_number]["stadium"]
-    id = team_dict[team_number]["id"]
     logo = team_dict[team_number]["logo"]
 
-    print(team_name)
     if team_name in user_info["teams"]:
         await callback.message.answer("You have such team!")
     else:
