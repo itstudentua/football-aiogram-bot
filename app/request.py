@@ -21,7 +21,7 @@ BASE_URL = 'https://v3.football.api-sports.io/'
 timezone = 'Europe/Kiev'
 
 users_db = dict()
-team_dict = {"Dynamo Kyiv": 572}
+team_dict = {"Dynamo Kyiv": 572, "Real Madrid": 541}
 
 
 # function which helps avoid error with dictionary users_db, job scheduler if bot server restart
@@ -33,7 +33,7 @@ def get_user_teams(user_id, hour=9, minute=5):
 
         users_db[user_id]["notifications"] = {}
         users_db[user_id]["notifications"]["status"] = True
-        users_db[user_id]["notifications"]["time"] = "00:45"
+        users_db[user_id]["notifications"]["time"] = "07:45"
 
         # starting scheduler
         if not h.scheduler_.running:

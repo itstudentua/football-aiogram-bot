@@ -259,7 +259,11 @@ async def notifications_func(message: Message, state: FSMContext):
     user_id = message.from_user.id
     user_info = rq.get_user_teams(user_id)
     status = user_info["notifications"]["status"]
-    await message.answer(f'Notification settings:', reply_markup=await kb.notifications_kb(status))
+    notifications_time = user_info["notifications"]["time"]
+    answer_status = "On" if status else "Off"
+    text = (f"Notification settings:\nCurrent notification status – {answer_status}\nNotification time is – "
+            f"{notifications_time}")
+    await message.answer(text, reply_markup=await kb.notifications_kb(status))
 
 
 @router.message(Notifications.time)
@@ -516,4 +520,4 @@ async def remove_team(callback: CallbackQuery, state: FSMContext):
         await state.clear()
         await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
         await callback.message.answer(f"No so not ...",
-                                      reply_markup=await kb.my_teams(user_id=callback.from_user.id))
+                                      reply_markup=await kb.my_teams(user_id=callback.from_user.id, all_in=False))
