@@ -24,7 +24,7 @@ my_teams_menu = ReplyKeyboardMarkup(keyboard=[
 ], resize_keyboard=True)
 
 schedule_menu = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text="Next week"), KeyboardButton(text="Today"), KeyboardButton(text="Previous week")],
+    [KeyboardButton(text="Previous week"), KeyboardButton(text="Today"), KeyboardButton(text="Next week")],
     [KeyboardButton(text="Calendar")],
     [KeyboardButton(text="Main menu")]
 ], resize_keyboard=True)

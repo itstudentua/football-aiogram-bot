@@ -192,7 +192,7 @@ async def get_team(message: Message, state: FSMContext):
     await state.clear()
 
     user_id = message.from_user.id
-    user_info = rq.get_user_teams(user_id)
+    rq.get_user_teams(user_id)
     teams_list = rq.get_team_info(message.text)
     await state.update_data(adding_team=teams_list)
     keyboard = await kb.teams_to_add(f'{item["name"]}, {item["country"]}' for item in teams_list)
@@ -455,7 +455,8 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
                                                          team_name),
                                                      date_from=date_from,
                                                      days_count=days_count, user_id=callback.from_user.id)
-            date_in_answer = period_class.get("period").lower() + month_year
+            date_in_answer = (period_class.get("period").lower() + month_year) if month_year == "" else (
+                month_year.strip())
             await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
             await state.clear()
 
