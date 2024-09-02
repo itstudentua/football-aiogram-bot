@@ -3,6 +3,9 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 import app.request as rq
 
+months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+          'November', 'December']
+
 main_kb = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text="My teams")],
     [KeyboardButton(text="Schedule"),
@@ -72,8 +75,7 @@ async def notifications_kb(status):
 
 async def calendar_kb(year):
     keyboard = InlineKeyboardBuilder()
-    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
-              'November', 'December']
+
     i = 1
     for mon in months:
         keyboard.add(InlineKeyboardButton(text=mon[:3], callback_data=f"mon_{mon}_{i}"))

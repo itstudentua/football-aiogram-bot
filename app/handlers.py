@@ -399,6 +399,7 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
 
     period_class = await state.get_data()
     team_name = callback.data.split('_')[1]
+    month_year = ""
 
     if period_class.get("removing_team") is not None:
         await state.update_data(removing_team=team_name)
@@ -440,6 +441,7 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
                 print(season, month)
                 days_count = rq.get_days_count_in_month(int(season), int(month))
                 print(days_count)
+                month_year = f" {kb.months[int(month)-1]} {season}"
             # show all teams matches
             if team_name == "All teams":
                 matches = rq.get_matches_of_all_teams(user_id=callback.from_user.id, season=season,
@@ -451,15 +453,14 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
                                                          team_name),
                                                      date_from=date_from,
                                                      days_count=days_count, user_id=callback.from_user.id)
-            date_in_answer = period_class.get("month").lower()
+            date_in_answer = period_class.get("period").lower() + month_year
             await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
             await state.clear()
 
         # if there aren't any matches, function return None for one team and "" for all teams
         if matches is None or matches == "":
             matches = f"There aren't any matches on {date_in_answer} for {team_name}"
-        await callback.message.answer(f"{team_name}'s schedule for {date_in_answer}{period_class.get("year")}:\n"
-                                      f"\n{matches}")
+        await callback.message.answer(f"{team_name}'s schedule for {date_in_answer}:\n\n{matches}")
 
 
 # function switching years in calendar
