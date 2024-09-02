@@ -63,7 +63,8 @@ def get_days_count_in_month(year, month):
 
 # function to create custom date_from
 def specify_date(date_from=today_date(), days_count=0):
-    return (datetime.strptime(date_from, "%Y-%m-%d") + timedelta(days=days_count)).strftime('%Y-%m-%d')
+    return (datetime.strptime(date_from, "%Y-%m-%d") + timedelta(days=days_count - 1 if days_count != 0
+            else days_count)).strftime('%Y-%m-%d')
 
 
 def get_matches_of_one_team(user_id,
@@ -134,7 +135,6 @@ def get_matches_of_all_teams(days_count,
                              user_id,
                              date_from=datetime.now().strftime('%Y-%m-%d'),
                              season=season_year()):
-
     get_user_teams(user_id)
 
     result = ''
