@@ -453,14 +453,15 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
                                                          team_name),
                                                      date_from=date_from,
                                                      days_count=days_count, user_id=callback.from_user.id)
-            date_in_answer = period_class.get("period").lower()
+            date_in_answer = period_class.get("month").lower()
             await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
             await state.clear()
 
         # if there aren't any matches, function return None for one team and "" for all teams
         if matches is None or matches == "":
             matches = f"There aren't any matches on {date_in_answer} for {team_name}"
-        await callback.message.answer(f"{team_name}'s schedule for {date_in_answer}:\n\n{matches}")
+        await callback.message.answer(f"{team_name}'s schedule for {date_in_answer}{period_class.get("year")}:\n"
+                                      f"\n{matches}")
 
 
 # function switching years in calendar
