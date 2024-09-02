@@ -1,5 +1,3 @@
-import os
-
 import pytz
 import requests
 from datetime import datetime, timedelta
@@ -7,6 +5,7 @@ from datetime import datetime, timedelta
 from apscheduler.triggers.cron import CronTrigger
 
 import app.handlers as h
+from config import api_key
 
 # https://www.devglan.com/online-tools/aes-encryption-decryption
 
@@ -17,22 +16,12 @@ import app.handlers as h
 # illyakup
 # api_key = '9E130836BDE61423C0FFA21E4A7FD6A55729FAF8E2E14AEEFF1EBBD3F4C56A4AC9226221A6DCE5791C226A6BC69D62D6'
 
-api_key = os.getenv("API_KEY")
 
 BASE_URL = 'https://v3.football.api-sports.io/'
 timezone = 'Europe/Kiev'
 
 users_db = dict()
-team_dict = {}
-
-RAILWAY_TIME = 3
-
-
-def railway_time(hour):
-    hour -= RAILWAY_TIME
-    if hour < 0:
-        hour += 24
-    return hour
+team_dict = {"Dynamo Kyiv": 572, "Real Madrid": 541}
 
 
 # function which helps avoid error with dictionary users_db, job scheduler if bot server restart
@@ -43,24 +32,20 @@ def get_user_teams(user_id, hour=9, minute=5):
         users_db[user_id]["teams"] = team_dict.copy()
 
         users_db[user_id]["notifications"] = {}
-        users_db[user_id]["notifications"]["status"] = "ON"
-        users_db[user_id]["notifications"]["time"] = "00:45"
+        users_db[user_id]["notifications"]["status"] = True
+        users_db[user_id]["notifications"]["time"] = "07:45"
 
         # starting scheduler
         if not h.scheduler_.running:
             h.scheduler_.start()
         job_id = f"job_{user_id}"
-        h.scheduler_.add_job(h.notifications_message, CronTrigger(hour=railway_time(hour), minute=minute), id=job_id)
+        h.scheduler_.add_job(h.notifications_message, CronTrigger(hour=hour, minute=minute), id=job_id)
     return users_db[user_id]
 
 
-def get_current_time():
-    return datetime.now()
-
-
 def get_date(date_format):
-    railway = get_current_time() + timedelta(hours=RAILWAY_TIME)
-    return railway.strftime(date_format)
+    current_time = datetime.now()
+    return current_time.strftime(date_format)
 
 
 def today_date():

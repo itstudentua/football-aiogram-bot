@@ -82,7 +82,7 @@ async def calendar_kb(year):
     keyboard.row(
         InlineKeyboardButton(text="<", callback_data=f"year_{year - 1}"),
         InlineKeyboardButton(text=str(year), callback_data="some_year"),
-        InlineKeyboardButton(text=">", callback_data=f"year_{year + 1}")
+        InlineKeyboardButton(text=">", callback_data=f"year_{year + 1 if year <= int(rq.season_year()) else year}")
     )
     return keyboard.as_markup()
 
