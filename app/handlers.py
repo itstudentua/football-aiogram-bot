@@ -435,7 +435,9 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
                 month = period_class.get("month")
                 month = f"0{month}" if int(month) < 10 else month
                 date_from = f"{season}-{month}-01"
+                print(season, month)
                 days_count = rq.get_days_count_in_month(int(season), int(month))
+                print(days_count)
             # show all teams matches
             if team_name == "All teams":
                 matches = rq.get_matches_of_all_teams(user_id=callback.from_user.id, season=season,
@@ -466,6 +468,7 @@ async def calendar_year(callback: CallbackQuery, state: FSMContext):
     rq.get_user_teams(user_id)
 
     new_year = int(callback.data.split('_')[-1])
+    print("new year: ", new_year)
     await state.update_data(year=str(new_year))
 
     keyboard = kb.calendar_kb(new_year)
@@ -475,6 +478,7 @@ async def calendar_year(callback: CallbackQuery, state: FSMContext):
 # function choosing month in calendar
 @router.callback_query(F.data.startswith('mon_'))
 async def calendar_month(callback: CallbackQuery, state: FSMContext):
+    year = await state.get_data()
     await state.clear()
 
     user_id = callback.from_user.id
@@ -485,12 +489,12 @@ async def calendar_month(callback: CallbackQuery, state: FSMContext):
     await state.update_data(month=month_for_state)
     await state.update_data(period="month")
 
-    year = await state.get_data()
     if year.get("year") is None:
         await state.update_data(year=rq.season_year())
         year = await state.get_data()
     await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     year_answer = year.get("year")
+    await state.update_data(year=year_answer)
     await callback.message.answer(f"Which teams' schedule do you want to see on {month_for_answer} {year_answer}",
                                   reply_markup=await kb.my_teams(user_id=callback.from_user.id))
 
