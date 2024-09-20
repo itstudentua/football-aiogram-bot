@@ -79,17 +79,30 @@ def get_days_count_in_month(year, month):
     return calendar.monthrange(year, month)[1]
 
 
+def set_right_parameters(value, func):
+    if value is None:
+        return func
+    else:
+        return value
+
+
 # function to create custom date_from
-def specify_date(date_from=today_date(), days_count=0):
+def specify_date(date_from=None, days_count=0):
+    date_from = set_right_parameters(date_from, today_date())
+
     return (datetime.strptime(date_from, "%Y-%m-%d") + timedelta(days=days_count - 1 if days_count != 0
             else days_count)).strftime('%Y-%m-%d')
 
 
 def get_matches_of_one_team(user_id,
-                            season=season_year(),
+                            season=None,
                             team_id=572,
-                            date_from=today_date(),
+                            date_from=None,
                             days_count=0):
+
+    season = set_right_parameters(season, season_year())
+    date_from = set_right_parameters(date_from, today_date())
+
     end_date = specify_date(date_from, days_count)
     get_user_teams(user_id)
 
@@ -151,8 +164,12 @@ def get_matches_of_one_team(user_id,
 
 def get_matches_of_all_teams(days_count,
                              user_id,
-                             date_from=datetime.now().strftime('%Y-%m-%d'),
-                             season=season_year()):
+                             date_from=None,
+                             season=None):
+
+    date_from = set_right_parameters(date_from, today_date())
+    season = set_right_parameters(season, season_year())
+
     get_user_teams(user_id)
 
     result = ''
