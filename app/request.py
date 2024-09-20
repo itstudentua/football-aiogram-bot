@@ -91,8 +91,7 @@ def set_right_parameters(value, func):
 def specify_date(date_from=None, days_count=0):
     date_from = set_right_parameters(date_from, today_date())
 
-    return (datetime.strptime(date_from, "%Y-%m-%d") + timedelta(days=days_count - 1 if days_count != 0
-            else days_count)).strftime('%Y-%m-%d')
+    return (datetime.strptime(date_from, "%Y-%m-%d") + timedelta(days=days_count)).strftime('%Y-%m-%d')
 
 
 def get_matches_of_one_team(user_id,
