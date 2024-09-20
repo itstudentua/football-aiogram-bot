@@ -34,6 +34,7 @@ def railway_time(hour):
         hour += 24
     return hour
 
+
 team_dict = {"Dynamo Kyiv": 572, "Real Madrid": 541}
 
 
