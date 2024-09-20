@@ -427,10 +427,8 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
             season = rq.season_year()
             if period_class.get("period") == "Next week":
                 date_from = rq.today_date()
-                print("Next", date_from)
             elif period_class.get("period") == "Previous week":
                 date_from = rq.specify_date(rq.today_date(), -7)
-                print("Prev", date_from)
             # for today
             elif period_class.get("period") == "Today":
                 date_from = rq.today_date()
