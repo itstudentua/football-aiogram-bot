@@ -442,9 +442,7 @@ async def choosing_team(callback: CallbackQuery, state: FSMContext):
                 month = period_class.get("month")
                 month = f"0{month}" if int(month) < 10 else month
                 date_from = f"{season}-{month}-01"
-                print(season, month)
                 days_count = rq.get_days_count_in_month(int(season), int(month))
-                print(days_count)
                 month_year = f" {kb.months[int(month)-1]} {season}"
             # show all teams matches
             if team_name == "All teams":
